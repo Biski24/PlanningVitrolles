@@ -1,0 +1,2 @@
+import { LayoutShell } from '@/components/layout-shell';
+export default function Page(){return <LayoutShell><h1 className='text-2xl font-bold'>Planning 4 semaines</h1><div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4'>{[1,2,3,4].map(w=><section key={w} className='bg-white rounded border p-4'>Semaine {w} (responsive)</section>)}</div><a href='/api/schedules/export?scope=team' className='inline-block mt-4 text-blue-600'>Exporter .ics équipe</a></LayoutShell>}

@@ -1,0 +1,14 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+
+enum Role { MANAGER EMPLOYEE }
+enum ContractType { FULL_TIME PART_TIME APPRENTICESHIP OTHER }
+enum VacationStatus { PENDING APPROVED REJECTED }
+
+model User { id String @id @default(cuid()) email String @unique passwordHash String role Role createdAt DateTime @default(now()) updatedAt DateTime @updatedAt profile EmployeeProfile? timeEntries TimeEntry[] vacations VacationRequest[] }
+model EmployeeProfile { id String @id @default(cuid()) firstName String lastName String color String desiredHoursPerWeek Float defaultAvailability Json contractType ContractType userId String @unique user User @relation(fields:[userId], references:[id]) schedules Schedule[] }
+model Schedule { id String @id @default(cuid()) date DateTime startTime DateTime endTime DateTime notes String? employeeId String employee EmployeeProfile @relation(fields:[employeeId], references:[id]) }
+model TimeEntry { id String @id @default(cuid()) day DateTime startTime DateTime endTime DateTime breakMinutes Int comment String? validated Boolean @default(false) userId String user User @relation(fields:[userId], references:[id]) }
+model VacationRequest { id String @id @default(cuid()) startDate DateTime endDate DateTime comment String? managerComment String? status VacationStatus @default(PENDING) userId String user User @relation(fields:[userId], references:[id]) }
+model SchoolHolidayPeriod { id String @id @default(cuid()) name String startDate DateTime endDate DateTime absenceQuota AbsenceQuota? }
+model AbsenceQuota { id String @id @default(cuid()) maxSimultaneousAbsences Int holidayPeriodId String @unique holidayPeriod SchoolHolidayPeriod @relation(fields:[holidayPeriodId], references:[id]) }
